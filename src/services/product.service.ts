@@ -10,11 +10,10 @@ const createProduct = async (req: Request) => {
     price: req.body.price,
     rating: req.body.rating,
     discount: req.body.discount,
-    status: req.body.quantity <= 0 ? 0 : req.body.quantity > 3 ? 2 : 1,
-    quantity: req.body.quantity,
     brand: req.body.brand,
     subCategory: req.body.subCategory,
     category: req.body.category,
+    specs: req.body.specs,
   });
   return await newProduct.save();
 };
@@ -196,8 +195,7 @@ const getProductById = async (id: string) => {
 const updateProduct = async (req: Request) => {
   let success = false;
   const id = req.params.id;
-  const status = req.body.quantity <= 0 ? 0 : req.body.quantity > 3 ? 2 : 1;
-  const data = { ...req.body, status };
+  const data = req.body;
   await ProductModel.findByIdAndUpdate(id, data)
     .then((data) => {
       if (!data) {

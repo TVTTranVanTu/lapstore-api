@@ -2,17 +2,21 @@ import mongoose, { Document, Schema } from "mongoose";
 import { IBrand } from "./brand.model";
 import { ISubCategory } from "./subcategory.model";
 
+type spec = {
+  key: string;
+  value: any;
+};
 export interface IProduct extends Document {
   productName: string;
   productThumbnail: string;
   description: string;
   price: number;
   rating: number;
-  discount: number;
   status: number;
-  quantity: number;
+  discount: number;
   subCategory: ISubCategory;
   brand: IBrand;
+  specs: spec[];
 }
 
 const ProductSchema: Schema = new Schema(
@@ -22,9 +26,8 @@ const ProductSchema: Schema = new Schema(
     description: { type: String, required: true },
     price: { type: Number, required: true },
     rating: { type: Number },
+    status: { type: Number, default: 0 },
     discount: { type: Number, required: true },
-    status: { type: Number },
-    quantity: { type: Number, required: true },
     subCategory: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "SubCategory",
@@ -39,6 +42,10 @@ const ProductSchema: Schema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Brand",
       required: true,
+    },
+    specs: {
+      type: Array,
+      default: [],
     },
   },
   { timestamps: true }

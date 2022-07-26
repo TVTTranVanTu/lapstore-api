@@ -7,11 +7,11 @@ const createProduct = async (req: Request, res: Response) => {
       res.status(400).send({ message: "Content can not empty" });
       return;
     }
-    const subCategory = await productService.createProduct(req);
+    const product = await productService.createProduct(req);
     res.status(200).json({
       success: true,
       message: "Create category successfully!",
-      data: subCategory,
+      data: product,
     });
   } catch (error) {
     if (!error.status) {

@@ -1,7 +1,9 @@
 import express, { Request, Response } from "express";
 import { HttpStatusCode } from "../utils/constants";
 import { BrandsRoute } from "./brand.route";
+import { CartRoute } from "./cart.route";
 import { CategoriesRoute } from "./category.route";
+import { InventoryRoute } from "./inventory.route";
 import { ProductRoute } from "./product.route";
 import { SubCategoriesRoute } from "./subcategory.route";
 import { userRouter } from "./user.route";
@@ -27,5 +29,11 @@ router.use("/brands", BrandsRoute);
 
 /**Product APIs */
 router.use("/products", ProductRoute);
+
+/**Inventory APIs */
+router.use("/inventory", InventoryRoute);
+
+/**Inventory APIs */
+router.use("/cart", CartRoute);
 
 export const api = router;

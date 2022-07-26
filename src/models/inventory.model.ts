@@ -1,4 +1,3 @@
-import { number } from "joi";
 import mongoose, { Schema } from "mongoose";
 
 export type reservation = {
@@ -10,6 +9,7 @@ export type reservation = {
 export interface IIventory extends Document {
   productId: string;
   quantity: number;
+  productName: string;
   reservations: reservation[];
   createdAt: Date;
   updatedAt: Date;
@@ -22,8 +22,9 @@ const iventorySchema = new Schema(
       ref: "Product",
       required: true,
     },
-    quantity: Number,
-    reservations: Array,
+    productName: { type: String, require: true },
+    quantity: { type: Number, require: true },
+    reservations: { type: Array },
     create_at: { type: Date, default: Date.now() },
   },
   { timestamps: true }
