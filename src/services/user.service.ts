@@ -134,7 +134,7 @@ const login = async (req: Request, res: Response) => {
     }
     const userInfo = Helper.setUserInfo(user);
 
-    await tokenModel.deleteMany();
+    await tokenModel.findOneAndDelete({ _userId: user._id });
 
     let result = {
       token: auth.generateToken(userInfo),
@@ -152,28 +152,84 @@ const login = async (req: Request, res: Response) => {
   }
 };
 
-const listUsers = async () => {
+const getUsers = async (req: Request) => {
   let users = null;
-  await userModel
-    .find()
-    .then((data) => {
-      if (!data) {
+  let page: any = req.query.page;
+  let limit: any = req.query.limit;
+  let search: any = req.query.search;
+
+  let searchInput: string;
+
+  if (search && search.trim().length > 0) {
+    searchInput = search;
+  } else {
+    searchInput = "";
+  }
+
+  if (page && limit) {
+    const pages = parseInt(page);
+    const limits = parseInt(limit);
+    const skip = pages * limits - limits;
+    const totals = await userModel
+      .find({
+        username: { $regex: ".*" + searchInput + ".*", $options: "i" },
+      })
+      .countDocuments({})
+      .then((total) => total);
+    await userModel
+      .find({
+        username: { $regex: ".*" + searchInput + ".*", $options: "i" },
+      })
+      .skip(skip)
+      .limit(limits)
+      .then((data) => {
+        if (!data) {
+          throw {
+            status: 404,
+            success: false,
+            message: "Users not found",
+          };
+        } else {
+          users = {
+            data: data,
+            pagination: {
+              totalRows: data.length,
+              page: page,
+              totals: totals,
+              totalPages: Math.ceil(totals / limit),
+            },
+          };
+        }
+      })
+      .catch((error) => {
         throw {
-          status: 404,
+          status: error.status || 500,
           success: false,
-          message: "list users not found!",
+          message: error.message,
         };
-      } else {
-        users = data;
-      }
-    })
-    .catch((error) => {
-      throw {
-        status: error.status || 500,
-        success: false,
-        message: error.message,
-      };
-    });
+      });
+  } else {
+    await userModel
+      .find()
+      .then((data) => {
+        if (!data) {
+          throw {
+            status: 404,
+            success: false,
+            message: "list users not found!",
+          };
+        } else {
+          users = data;
+        }
+      })
+      .catch((error) => {
+        throw {
+          status: error.status || 500,
+          success: false,
+          message: error.message,
+        };
+      });
+  }
   return users;
 };
 
@@ -240,7 +296,7 @@ const checkTokenExpired = async (id: string) => {
 export default {
   register,
   login,
-  listUsers,
+  getUsers,
   viewProfile,
   updateProfile,
   verifyEmail,

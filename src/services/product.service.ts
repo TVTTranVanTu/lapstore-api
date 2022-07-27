@@ -36,12 +36,12 @@ const getProducts = async (req: Request) => {
     const limits = parseInt(limit);
     const skip = pages * limits - limits;
     const totals = await ProductModel.find({
-      productName: { $regex: ".*" + searchInput + ".*" },
+      productName: { $regex: ".*" + searchInput + ".*", $options: "i" },
     })
       .countDocuments({})
       .then((total) => total);
     await ProductModel.find({
-      productName: { $regex: ".*" + searchInput + ".*" },
+      productName: { $regex: ".*" + searchInput + ".*", $options: "i" },
     })
       .skip(skip)
       .limit(limits)

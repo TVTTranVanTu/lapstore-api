@@ -85,7 +85,7 @@ const deleteInventory = async (req: Request, res: Response) => {
 
 const getListInventory = async (req: Request, res: Response) => {
   try {
-    const inventory = await inventoryService.getListInventory();
+    const inventory = await inventoryService.getListInventory(req);
     res.status(200).send(inventory);
   } catch (error) {
     if (!error.status) {
@@ -94,7 +94,6 @@ const getListInventory = async (req: Request, res: Response) => {
       res.status(error.status).json({ message: error.message });
     }
   }
-  return inventoryService.getListInventory();
 };
 export default {
   addInventory,

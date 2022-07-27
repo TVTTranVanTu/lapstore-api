@@ -67,7 +67,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
 
 const listUsers = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const users = await userService.listUsers();
+    const users = await userService.getUsers(req);
     return res.status(200).send(users);
   } catch (error) {
     if (!error.status) {

@@ -4,7 +4,7 @@ import auth from "../middlewares/auth.middlewares";
 
 const router = express.Router();
 
-router.route("/").post(auth.verifyToken, brandController.createBrand);
+router.route("/").post(brandController.createBrand);
 
 router.route("/").get(brandController.getBrands);
 
