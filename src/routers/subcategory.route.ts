@@ -13,6 +13,8 @@ router.route("/:id").get(subCategoryController.getSubCategoryById);
 
 router.route("/:id").put(subCategoryController.updateSubCategory);
 
+router.route("/active/:id").put(subCategoryController.updateStatusSubCategory);
+
 router.route("/:id").delete(subCategoryController.deleteSubCategory);
 
 export const SubCategoriesRoute = router;

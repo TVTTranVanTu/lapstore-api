@@ -18,10 +18,12 @@ const createSubCategory = async (req: Request) => {
   return await newSubCategory.save();
 };
 
-const getSubCategory = async () => {
+const getSubCategory = async (req: Request) => {
   let subCategories = null;
+  const active = req.query.active;
+
   await subcategoryModel
-    .find()
+    .find({ active: active ? active : { $in: [0, 1] } })
     .then((data) => {
       if (!data) {
         throw {
@@ -43,14 +45,15 @@ const getSubCategory = async () => {
   return subCategories;
 };
 
-const getSubCategoryByCT = async (id: string) => {
+const getSubCategoryByCT = async (id: string, active: any) => {
   let subCategories = null;
   let categoryNav = null;
+
   const check = (await categoryModel.findById(id)).categoryName;
 
   if (check) {
     await subcategoryModel
-      .find()
+      .find({ active: active ? active : { $in: [0, 1] } })
       .then((data) => {
         if (!data) {
           throw {
@@ -144,6 +147,42 @@ const updateSubCategory = async (req: Request) => {
   return success;
 };
 
+const updateStatusSubCategory = async (req: Request) => {
+  const { subCategoryName } = req.body;
+  const active = req.body.active;
+
+  const check = await subcategoryModel.findOne({ subCategoryName });
+  if (check) {
+    throw {
+      status: 409,
+      message: "The subCategory name already exists!",
+    };
+  }
+  let success = false;
+  const id = req.params.id;
+  await subcategoryModel
+    .findByIdAndUpdate(id, { active })
+    .then((data) => {
+      if (!data) {
+        throw {
+          status: 404,
+          success: false,
+          message: "SubCategory not found",
+        };
+      } else {
+        success = true;
+      }
+    })
+    .catch((error) => {
+      throw {
+        status: error.status || 500,
+        success: false,
+        message: error.message,
+      };
+    });
+  return success;
+};
+
 const deleteSubCategory = async (req: Request) => {
   let success = false;
   const id = req.params.id;
@@ -174,6 +213,7 @@ export default {
   createSubCategory,
   getSubCategory,
   getSubCategoryByCT,
+  updateStatusSubCategory,
   getSubCategoryById,
   updateSubCategory,
   deleteSubCategory,

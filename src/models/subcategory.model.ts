@@ -3,6 +3,7 @@ import { ICategory } from "./category.model";
 export interface ISubCategory extends Document {
   subCategoryName: string;
   category: ICategory;
+  active: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -15,6 +16,7 @@ const SubCategorySchema: Schema = new Schema(
       ref: "Category",
       required: true,
     },
+    active: { type: Number, default: 1 },
   },
   { timestamps: true }
 );
