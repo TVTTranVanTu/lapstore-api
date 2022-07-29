@@ -25,7 +25,7 @@ const createCategory = async (req: Request, res: Response) => {
 
 const getCategory = async (req: Request, res: Response) => {
   try {
-    const categories = await categoryService.getCategory();
+    const categories = await categoryService.getCategory(req);
     res.status(200).send(categories);
   } catch (error) {
     if (!error.status) {
@@ -34,7 +34,6 @@ const getCategory = async (req: Request, res: Response) => {
       res.status(error.status).json({ message: error.message });
     }
   }
-  return categoryService.getCategory();
 };
 
 const getCategoryNav = async (req: Request, res: Response) => {
@@ -48,7 +47,6 @@ const getCategoryNav = async (req: Request, res: Response) => {
       res.status(error.status).json({ message: error.message });
     }
   }
-  return categoryService.getCategory();
 };
 
 const getCategoryById = async (req: Request, res: Response) => {
@@ -62,7 +60,6 @@ const getCategoryById = async (req: Request, res: Response) => {
       res.status(error.status).json({ message: error.message });
     }
   }
-  return categoryService.getCategory();
 };
 
 const updateCategory = async (req: Request, res: Response) => {
@@ -71,6 +68,29 @@ const updateCategory = async (req: Request, res: Response) => {
   }
   try {
     const result = await categoryService.updateCategory(req);
+    const category = await categoryService.getCategoryById(req.params.id);
+    res.status(200).json({
+      success: result,
+      message: "Category updated successfully",
+      data: category,
+    });
+  } catch (error) {
+    if (!error.status) {
+      res.status(500).json({ success: false, message: error.message });
+    } else {
+      res
+        .status(error.status)
+        .json({ success: error.success, message: error.message });
+    }
+  }
+};
+
+const updateStatus = async (req: Request, res: Response) => {
+  if (!req.body) {
+    return res.status(400).send({ message: "Content can not empty" });
+  }
+  try {
+    const result = await categoryService.updateStatusCategory(req);
     const category = await categoryService.getCategoryById(req.params.id);
     res.status(200).json({
       success: result,
@@ -112,6 +132,7 @@ export default {
   createCategory,
   getCategory,
   getCategoryNav,
+  updateStatus,
   getCategoryById,
   updateCategory,
   deleteCategory,

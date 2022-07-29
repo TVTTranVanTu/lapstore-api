@@ -13,6 +13,8 @@ router.route("/:id").get(categoryController.getCategoryById);
 
 router.route("/:id").put(categoryController.updateCategory);
 
+router.route("/active/:id").put(categoryController.updateStatus);
+
 router.route("/:id").delete(categoryController.deleteCategory);
 
 export const CategoriesRoute = router;
