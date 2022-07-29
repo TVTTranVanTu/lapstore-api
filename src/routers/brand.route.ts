@@ -12,6 +12,8 @@ router.route("/:id").get(brandController.getBrandById);
 
 router.route("/:id").put(brandController.updateBrand);
 
+router.route("/active/:id").put(brandController.unActiveBrand);
+
 router.route("/:id").delete(brandController.deleteBrand);
 
 export const BrandsRoute = router;

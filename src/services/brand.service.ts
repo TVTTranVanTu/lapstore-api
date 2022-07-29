@@ -1,5 +1,5 @@
-import { Request } from 'express';
-import Brand from '../models/brand.model';
+import { Request } from "express";
+import Brand from "../models/brand.model";
 
 const createBrand = async (req: Request) => {
   const { brandName } = req.body;
@@ -7,7 +7,7 @@ const createBrand = async (req: Request) => {
   if (check) {
     throw {
       status: 409,
-      message: 'The Brand name already exists!',
+      message: "The Brand name already exists!",
     };
   }
   const brand = new Brand({
@@ -17,15 +17,17 @@ const createBrand = async (req: Request) => {
   return await brand.save();
 };
 
-const getBrands = async () => {
+const getBrands = async (req: Request) => {
   let brands = null;
-  await Brand.find()
+  const active = req.query.active;
+
+  await Brand.find({ active: active ? active : { $in: [0, 1] } })
     .then((data) => {
       if (!data) {
         throw {
           status: 404,
           success: false,
-          message: 'Brand not found',
+          message: "Brand not found",
         };
       } else {
         brands = data;
@@ -49,7 +51,7 @@ const getBrandById = async (id: string) => {
         throw {
           status: 404,
           success: false,
-          message: 'Brand not found',
+          message: "Brand not found",
         };
       } else {
         brand = data;
@@ -74,7 +76,33 @@ const updateBrand = async (req: Request) => {
         throw {
           status: 404,
           success: false,
-          message: 'Brand not found',
+          message: "Brand not found",
+        };
+      } else {
+        success = true;
+      }
+    })
+    .catch((error) => {
+      throw {
+        status: error.status || 500,
+        success: false,
+        message: error.message,
+      };
+    });
+  return success;
+};
+
+const unActiveBrand = async (req: Request) => {
+  let success = false;
+  const id = req.params.id;
+  const active = req.body.active;
+  await Brand.findByIdAndUpdate(id, { active })
+    .then((data) => {
+      if (!data) {
+        throw {
+          status: 404,
+          success: false,
+          message: "Brand not found",
         };
       } else {
         success = true;
@@ -99,7 +127,7 @@ const deleteBrand = async (req: Request) => {
         throw {
           status: 404,
           success: false,
-          message: 'Brand not found',
+          message: "Brand not found",
         };
       } else {
         success = true;
@@ -118,6 +146,7 @@ const deleteBrand = async (req: Request) => {
 export default {
   createBrand,
   getBrands,
+  unActiveBrand,
   getBrandById,
   updateBrand,
   deleteBrand,
