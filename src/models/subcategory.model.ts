@@ -1,6 +1,7 @@
 import mongoose, { Document, Schema } from "mongoose";
 import { ICategory } from "./category.model";
 export interface ISubCategory extends Document {
+  _id: string;
   subCategoryName: string;
   category: ICategory;
   active: number;

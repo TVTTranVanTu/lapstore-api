@@ -153,7 +153,7 @@ const getProductsBySub = async (req: Request) => {
           };
         } else {
           products = data.filter(function (e) {
-            return e.subCategory._id == id;
+            return e.subCategory.includes({ _id: id });
           });
         }
       })
