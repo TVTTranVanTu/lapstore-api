@@ -14,7 +14,8 @@ export interface IProduct extends Document {
   rating: number;
   status: number;
   discount: number;
-  subCategory: ISubCategory;
+  subCategory: any[];
+  category: any[];
   brand: IBrand;
   specs: spec[];
 }
@@ -28,16 +29,20 @@ const ProductSchema: Schema = new Schema(
     rating: { type: Number },
     status: { type: Number, default: 0 },
     discount: { type: Number, required: true },
-    subCategory: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "SubCategory",
-      required: true,
-    },
-    category: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Category",
-      required: true,
-    },
+    subCategory: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "SubCategory",
+        required: true,
+      },
+    ],
+    category: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Category",
+        required: true,
+      },
+    ],
     brand: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Brand",
