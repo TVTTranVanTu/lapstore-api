@@ -57,7 +57,7 @@ const getProducts = async (req: Request) => {
             data: data,
             pagination: {
               totalRows: data.length,
-              page: page,
+              page: pages,
               totals: totals,
               totalPages: Math.ceil(totals / limit),
             },
@@ -128,7 +128,7 @@ const getProductsBySub = async (req: Request) => {
             data: data,
             pagination: {
               totalRows: data.length,
-              page: page,
+              page: pages,
               totals: totals,
               totalPages: Math.ceil(totals / limit),
             },
